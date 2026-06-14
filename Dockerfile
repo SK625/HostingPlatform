@@ -1,19 +1,24 @@
-FROM ubuntu:22.04
+
+FROM python:3.11-slim
+
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+
+WORKDIR /app
+
+
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    libssl-dev \
-    python3 \
-    golang-go \
-    rustc \
-    openjdk-17-jdk \
+    docker.io \
     && rm -rf /var/lib/apt/lists/*
 
 
-WORKDIR /sandbox
+RUN pip install --no-cache-dir fastapi uvicorn python-multipart
+
+COPY . /app
 
 
-CMD ["/bin/bash"]
+EXPOSE 8000
+
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
